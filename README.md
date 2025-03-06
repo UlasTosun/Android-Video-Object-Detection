@@ -1,32 +1,54 @@
-# Android-Object-Detection
-A template and demo application for object detection on Android. **[You can find complete Android Studio project folder and APK file in here.](https://drive.google.com/drive/folders/1XXm1DYxNjEjSPo3TxjJjj5vTKAg1KSEU?usp=sharing)** Since, GitHub has file count and size limitations, I have uploaded the project to Google Drive.
 
-Project uses MobileNet SSD for object detection which is a mobile friendly neural network.
+# Android Video Object Detection
 
-## About SSD and MobileNet
+This repository provides an example for mobile video object detection and how to increase its accuracy using accelerometer data. Provided way to improve accuracy is a part of my master’s thesis.
 
-Briefly, **[MobileNet](https://arxiv.org/abs/1704.04861)** is a backbone (the part of neural network which is used for feature extraction) for Convolutional Neural Networks (CNNs) and it uses depthwise separable convolution instead of classical convolution. Thanks to its specific convolution type, it is faster than similar backbones.
+## About MobileNet SSD
 
-**[Single Shot Detector (SSD)](https://arxiv.org/abs/1512.02325)** is a Convolutional Neural Network (CNN) which is developed for object detection and it uses **[VGG-16](https://arxiv.org/abs/1409.1556)** as backbone by default.
+Briefly, [MobileNet](https://arxiv.org/abs/1704.04861) is a backbone (the part of neural network which is used for feature extraction) for Convolutional Neural Networks (CNNs) and it uses depthwise separable convolution instead of classical convolution. Thanks to its specific convolution type, it is faster than similar backbones.
 
-MobileNet SSD is the faster (and less accurate sadly) version of SSD. It uses MobileNet as backbone which makes it more mobile friendly in terms of both computation power and memory consumption.
+[Single Shot Detector (SSD)](https://arxiv.org/abs/1512.02325) is a Convolutional Neural Network (CNN) which is developed for object detection and it uses [VGG-16](https://arxiv.org/abs/1409.1556) as backbone by default.
+
+MobileNet SSD is a combination of classical SSD and MobileNet. It uses MobileNet as backbone instead of VGG-16. This change in backbone makes MobileNet SSD faster than a classical SSD (and unfortunately less accurate). It requires less computing power and memory and consumes less power, so it is more mobile friendly. The following drawing shows how MobileNet and SSD architectures are combined.
+
+![MobileNet SSD](Images/MobileNetSSD.png)
 
 Following plot compares detection speed of both SSD and MobileNet SSD for an example video in an Android device (Xiaomi Mi 5s). Horizontal axis represents frames and vertical axis shows the time spent for each frame in miliseconds. As you can see clearly, the difference in speed is dramatic.
 
-<img src="/Images/Speed.jpg">
+![Speed Comparison](Images/Speed.jpg)
 
-Additionaly, following plot shows the performance of MobileNet SSD on **[MS COCO](https://cocodataset.org/#home)** 2014 test dataset with respect to different Intersection over Union (IoU) thresholds. Bars represet recall, precision and F-1 score, respectively.
+Additionaly, following plot shows the performance of MobileNet SSD on [MS COCO](https://cocodataset.org/#home) 2014 test dataset with respect to different Intersection over Union (IoU) thresholds. Bars represet recall, precision and F-1 score, respectively.
 
-<img src="/Images/Results.jpg">
+![Performance Results](Images/Results.jpg)
 
+Following videos demonstrate the object detection results of MobileNet SSD. Videos are processed in real-time on an Android device.
 
+[![Campus Object Detection](https://img.youtube.com/vi/UDY5FalXF4Q/0.jpg)](https://www.youtube.com/watch?v=UDY5FalXF4Q)
 
-## Android App
+[![Street Object Detection](https://img.youtube.com/vi/qFo5JeD2S1A/0.jpg)](https://www.youtube.com/watch?v=qFo5JeD2S1A)
 
-The project is based on this **[example](https://docs.opencv.org/3.4/d0/d6c/tutorial_dnn_android.html)** provided by OpenCV. It has been developed by using OpenCV 3.4.1. and related OpenCV files are already in the project folder, you do not need to add them again.
+## Increasing Accuracy by Using Accelerometer
 
-Model files were taken from **[Model Zoo.](https://modelzoo.co)**
+In mobile videography, camera moves most of the time. Also, almost every mobile device has an accelerometer that can measure the device (and also camera) movement. Therefore, acceleration data can be used to estimate camera movement and camera motion estimation can be used to improve object detection accuracy. The flowchart below shows how accelerometer data and MobileNet SSD results combined for better object detection.
 
-Following video is an example of Android app.
+![Flow Diagram](Images/FlowDiagram.png)
 
-https://user-images.githubusercontent.com/40580957/145451134-e4c3ea9b-19e6-44bd-ac34-aefb446fa8ed.mp4
+Videos below demonstrate the object detection results of the new architecture. Videos recorded at 24 FPS with 1280x720 resolution. Result videos play at 3 FPS (8 times slower than original videos). Meaning of the rectangle colors as followings:
+
+**Green:** The BB generated by using MobileNet SSD
+
+**Red:** The BB generated by using accelerometer data
+
+**Dashed Blue:** The BB accepted as final decision (combined result)
+
+[![Result 1](https://img.youtube.com/vi/Al2_m7gZAmI/0.jpg)](https://www.youtube.com/watch?v=Al2_m7gZAmI)
+
+[![Result 2](https://img.youtube.com/vi/0XGwzxV264M/0.jpg)](https://www.youtube.com/watch?v=0XGwzxV264M)
+
+[![Result 3](https://img.youtube.com/vi/7N6DkpAWihM/0.jpg)](https://www.youtube.com/watch?v=7N6DkpAWihM)
+
+[![Result 4](https://img.youtube.com/vi/ijy2p_MmRPk/0.jpg)](https://www.youtube.com/watch?v=ijy2p_MmRPk)
+
+## About Android Application
+
+The application is based on this [example](https://docs.opencv.org/3.4/d0/d6c/tutorial_dnn_android.html) provided by OpenCV. It has been developed by using OpenCV 3.4.1. Model files were taken from [Model Zoo.](https://modelzoo.co) The provided APK and Java files in this repository is only an example for video object detection on an Android device. They show pure MobileNet SSD results and do not use accelerometer data to improve results.
